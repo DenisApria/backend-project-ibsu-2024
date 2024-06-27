@@ -13,6 +13,9 @@ module.exports = {
             if (!cart) {
                 return res.status(404).json({ message: 'cart_not_found' });
             }
+            if (cart.items.length === 0) {
+                return res.status(404).json({ message: 'cart_is_empty' });
+            }
 
             let totalAmount = 0;
             cart.items.forEach(item => {

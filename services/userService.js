@@ -125,5 +125,29 @@ module.exports = {
         } catch (error) {
             res.status(500).send(error);
         }
+    },
+    managePermit: async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const { permits } = req.body;
+
+            if (!Array.isArray(permits)) {
+                return res.status(400).json({ message: 'permits_should_be_an_array' });
+            }
+
+            const user = await UserModel.findByIdAndUpdate(
+                userId,
+                { permits },
+                { new: true }
+            );
+
+            if (!user) {
+                return res.status(404).json({ message: 'user_not_found' });
+            }
+
+            res.json({ message: 'permits_updated_successfully', user });
+        } catch (error) {
+            res.status(500).json(error);
+        }
     }
 }
