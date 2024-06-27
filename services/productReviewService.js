@@ -1,8 +1,8 @@
-const StudentModel = require('../models/student');
+const ProductReviewModel = require('../models/productReview');
 
 module.exports = {
     getAll: (req, res) => {
-        StudentModel.find({})
+        ProductReviewModel.find({})
             .then(data => {
                 res.json(data);
             })
@@ -12,23 +12,15 @@ module.exports = {
     },
     add: async (req, res) => {
         try {
-            const savedItem = await new StudentModel(req.body).save();
-            res.json(savedItem);
-        } catch (error) {
-            res.status(500).json(error);
-        }
-    },
-    getOne: async (req, res) => {
-        try {
-            const item = await StudentModel.findById(req.params.id);
-            res.json(item);
+            const savedReview = await new ProductReviewModel(req.body).save();
+            res.json(savedReview);
         } catch (error) {
             res.status(500).json(error);
         }
     },
     delete: async (req, res) => {
         try {
-            await StudentModel.deleteOne({ _id: req.params.id });
+            await ProductReviewModel.deleteOne({ _id: req.params.id });
             res.json({ success: true });
         } catch (error) {
             res.status(500).json(error);
@@ -36,13 +28,23 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
-            const item = await StudentModel.findByIdAndUpdate(req.params.id,
+            const review = await ProductReviewModel.findByIdAndUpdate(req.params.id,
                 { $set: req.body },
                 {
                     new: true
                 }
             );
-            res.json(item);
+            res.json(review);
+        } catch (error) {
+            res.status(500).json(error);
+        }
+    },
+    getProductRreviews: async (req, res) => {
+        try {
+            const productId = req.params.id;
+            const reviews = await ProductReviewModel.find({ product: productId })
+                .populate('user', 'username');
+            res.json(reviews);
         } catch (error) {
             res.status(500).json(error);
         }
